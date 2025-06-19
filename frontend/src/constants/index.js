@@ -164,6 +164,7 @@ export const THEMES = [
 
 export const LANGUAGES = [
   "English",
+  "Bangla",
   "Spanish",
   "French",
   "German",
@@ -181,6 +182,7 @@ export const LANGUAGES = [
 
 export const LANGUAGE_TO_FLAG = {
   english: "gb",
+  bangla: "bd",
   spanish: "es",
   french: "fr",
   german: "de",
