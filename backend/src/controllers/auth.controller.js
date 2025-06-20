@@ -46,12 +46,86 @@ export async function signup(req, res) {
       verified: false,
     });
 
-    const html = `
-      <p>Hello ${fullName},</p>
-      <p>Your verification code is: <strong>${verificationCode}</strong></p>
-      <p>This code will expire in 10 minutes.</p>
-    `;
+    const html = (
+      <table
+        width="100%"
+        cellpadding="0"
+        cellspacing="0"
+        style="background: #f5f7fa; padding: 20px"
+      >
+        <tr>
+          <td align="center">
+            <table
+              width="600"
+              cellpadding="0"
+              cellspacing="0"
+              style="
+              background: #ffffff;
+              border-radius: 8px;
+              overflow: hidden;
+              font-family: Arial, sans-serif;
+            "
+            >
+              <tr style="background: #add6ff">
+                <td align="center" style="padding: 20px">
+                  <img
+                    src="https://yourdomain.com/logo.png"
+                    alt="IT Nut"
+                    width="120"
+                    style="display: block"
+                  />
+                  <p style="margin: 5px 0; font-weight: bold">STREAM</p>
+                </td>
+              </tr>
 
+              <tr>
+                <td style="padding: 30px; color: #333; font-size: 14px">
+                  <p>
+                    <strong>{fullName}</strong>
+                  </p>
+                  <h1 style="text-align: center">Your Verification Code Is</h1>
+                  <h2 style="text-align: center">{verificationCode}</h2>
+                  <p style="text-align: center">
+                    <b> Please do not share this code with anyone. </b>
+                  </p>
+                </td>
+              </tr>
+
+              <tr style="background: #c1dffd">
+                <td align="center" style="padding: 20px">
+                  <p style="margin: 10px 0">
+                    <strong>Stay Safe Stay Secure</strong>
+                  </p>
+                  <p>
+                    <a href="https://facebook.com/chowdhurysami69">
+                      <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg"
+                        width="24"
+                      />
+                    </a>
+                    <a href="https://github.com/mohammad-sami-chowdhury">
+                      <img
+                        src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
+                        width="24"
+                      />
+                    </a>
+                    <a href="https://linkedin.com/in/mohammad-sami-chowdhury">
+                      <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/8/81/LinkedIn_icon.svg"
+                        width="24"
+                      />
+                    </a>
+                  </p>
+                  <p style="font-size: 12px; color: #777; margin-top: 20px">
+                    Developed by Mohammad Sami Chowdhury
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    );
     await sendEmail(email, "Your Stream App OTP Code", html);
 
     // 🔑 Set JWT cookie even before verification
