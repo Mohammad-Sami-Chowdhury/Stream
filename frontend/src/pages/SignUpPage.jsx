@@ -28,6 +28,7 @@ const SignUpPage = () => {
   const handleSignup = (e) => {
     e.preventDefault();
     signupMutation(signupData);
+    localStorage.setItem("email", signupData.email); // Store email in localStorage
   };
 
   return (
