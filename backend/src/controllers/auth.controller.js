@@ -74,10 +74,8 @@ export async function signup(req, res) {
                     width="120"
                     style="display: block"
                   />
-                  <p style="margin: 5px 0; font-weight: bold">STREAM</p>
                 </td>
               </tr>
-
               <tr>
                 <td style="padding: 30px; color: #333; font-size: 14px">
                   <p>
