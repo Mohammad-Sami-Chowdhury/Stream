@@ -47,7 +47,7 @@ export async function signup(req, res) {
     });
 
     const html = (
-      <table
+      `<table
         width="100%"
         cellpadding="0"
         cellspacing="0"
@@ -69,8 +69,8 @@ export async function signup(req, res) {
               <tr style="background: #add6ff">
                 <td align="center" style="padding: 20px">
                   <img
-                    src="https://yourdomain.com/logo.png"
-                    alt="IT Nut"
+                    src="https://i.ibb.co/kVHb1YRw/logo.png"
+                    alt="Stream"
                     width="120"
                     style="display: block"
                   />
@@ -81,10 +81,10 @@ export async function signup(req, res) {
               <tr>
                 <td style="padding: 30px; color: #333; font-size: 14px">
                   <p>
-                    <strong>{fullName}</strong>
+                    <strong>${fullName}</strong>
                   </p>
                   <h1 style="text-align: center">Your Verification Code Is</h1>
-                  <h2 style="text-align: center">{verificationCode}</h2>
+                  <h2 style="text-align: center">${verificationCode}</h2>
                   <p style="text-align: center">
                     <b> Please do not share this code with anyone. </b>
                   </p>
@@ -99,7 +99,7 @@ export async function signup(req, res) {
                   <p>
                     <a href="https://facebook.com/chowdhurysami69">
                       <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg"
+                        src="https://img.freepik.com/premium-vector/art-illustration_929495-41.jpg"
                         width="24"
                       />
                     </a>
@@ -111,7 +111,7 @@ export async function signup(req, res) {
                     </a>
                     <a href="https://linkedin.com/in/mohammad-sami-chowdhury">
                       <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/8/81/LinkedIn_icon.svg"
+                        src="https://static.vecteezy.com/system/resources/previews/018/930/480/large_2x/linkedin-logo-linkedin-icon-transparent-free-png.png"
                         width="24"
                       />
                     </a>
@@ -124,7 +124,7 @@ export async function signup(req, res) {
             </table>
           </td>
         </tr>
-      </table>
+      </table>`
     );
     await sendEmail(email, "Your Stream App OTP Code", html);
 
