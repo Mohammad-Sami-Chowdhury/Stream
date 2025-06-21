@@ -46,8 +46,7 @@ export async function signup(req, res) {
       verified: false,
     });
 
-    const html = (
-      `<table
+    const html = `<table
         width="100%"
         cellpadding="0"
         cellspacing="0"
@@ -122,8 +121,7 @@ export async function signup(req, res) {
             </table>
           </td>
         </tr>
-      </table>`
-    );
+      </table>`;
     await sendEmail(email, "Your Stream App OTP Code", html);
 
     // 🔑 Set JWT cookie even before verification
@@ -147,7 +145,7 @@ export async function signup(req, res) {
         image: newUser.profilePic || "",
       });
     } catch (error) {
-      console.log("Error creating Stream user:", error.message);
+      return res.status(500).json({ message: "Error creating Stream user" });
     }
 
     return res.status(201).json({
@@ -156,7 +154,6 @@ export async function signup(req, res) {
       user: newUser,
     });
   } catch (error) {
-    console.log("Error in signup controller", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 }
@@ -244,9 +241,6 @@ export async function onboard(req, res) {
         name: updatedUser.fullName,
         image: updatedUser.profilePic || "",
       });
-      console.log(
-        `Stream user updated after onboarding for ${updatedUser.fullName}`
-      );
     } catch (streamError) {
       console.log(
         "Error updating Stream user during onboarding:",

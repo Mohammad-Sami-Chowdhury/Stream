@@ -1,28 +1,28 @@
 import { useState } from "react";
 import { ShipWheelIcon } from "lucide-react";
 import { axiosInstance } from "../lib/axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 const ResetPasswordRequestPage = () => {
   const [email, setEmail] = useState("");
   const [isPending, setIsPending] = useState(false);
-  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsPending(true);
-    setMessage("");
     try {
       const response = await axiosInstance.post("/auth/send-reset-code", {
         email,
       });
 
       if (response.status === 200) {
-        setMessage(response.data.message || "Reset code sent!");
+        toast.success(response.data.message || "Reset code sent!");
         setEmail("");
-        localStorage.setItem(email)
+        localStorage.setItem(email);
       } else {
-        setMessage(response.data.message || "Failed to send reset code!");
+        toast.error(response.data.message || "Failed to send reset code!");
       }
     } catch (error) {
       if (
@@ -30,12 +30,13 @@ const ResetPasswordRequestPage = () => {
         error.response.data &&
         error.response.data.message
       ) {
-        setMessage(error.response.data.message);
-      } else {
-        setMessage("Something went wrong. Try again.");
+        toast.error(error.response.data.message);
       }
     }
     setIsPending(false);
+    setTimeout(() => {
+      navigate("/reset-password-otp");
+    }, 1000);
   };
 
   return (
@@ -43,6 +44,7 @@ const ResetPasswordRequestPage = () => {
       className="h-screen flex items-center justify-center p-4 sm:p-6 md:p-8"
       data-theme="forest"
     >
+      <Toaster />
       <div className="border border-primary/25 flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-base-100 rounded-xl shadow-lg overflow-hidden">
         <div className="w-full lg:w-1/2 p-4 sm:p-8 flex flex-col">
           <div className="mb-4 flex items-center justify-start gap-2">
@@ -90,19 +92,6 @@ const ResetPasswordRequestPage = () => {
                     "Send Reset Code"
                   )}
                 </button>
-
-                {message && (
-                  <p
-                    className={`mt-3 text-center ${
-                      message.toLowerCase().includes("success")
-                        ? "text-green-600"
-                        : "text-red-600"
-                    }`}
-                  >
-                    {message}
-                  </p>
-                )}
-
                 <div className="text-center mt-4">
                   <p className="text-sm">
                     Don't have an account?{" "}

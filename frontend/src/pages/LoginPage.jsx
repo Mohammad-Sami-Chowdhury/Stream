@@ -112,7 +112,7 @@ const LoginPage = () => {
                     <p className="text-sm">
                       Forgot Password?{" "}
                       <Link
-                        to="/reset-password-otp"
+                        to="/reset-password-email"
                         className="text-primary hover:underline"
                       >
                         Reset

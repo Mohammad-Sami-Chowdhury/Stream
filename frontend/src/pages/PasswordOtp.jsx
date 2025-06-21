@@ -2,19 +2,18 @@ import { useState } from "react";
 import { ShipWheelIcon } from "lucide-react";
 import { axiosInstance } from "../lib/axios";
 import { Link, useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 const PasswordOtp = () => {
   const email = localStorage.getItem("email") || ""; // fixed, no need for state here
   const [code, setCode] = useState("");
   const [isPending, setIsPending] = useState(false);
-  const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // prevent page reload
 
     setIsPending(true);
-    setMessage("");
     try {
       const response = await axiosInstance.post("/auth/verify-reset-code", {
         email,
@@ -22,14 +21,12 @@ const PasswordOtp = () => {
       });
 
       if (response.status === 200) {
-        setMessage(response.data.message || "Verification successful!");
-
-        // Navigate to reset password page on success
+        toast.success(response.data.message || "Verification successful!");
         setTimeout(() => {
           navigate("/reset-password");
         }, 1000);
       } else {
-        setMessage(response.data.message || "Verification failed!");
+        toast.error(response.data.message || "Verification failed!");
       }
     } catch (error) {
       if (
@@ -37,9 +34,9 @@ const PasswordOtp = () => {
         error.response.data &&
         error.response.data.message
       ) {
-        setMessage(error.response.data.message);
+        toast.error(error.response.data.message);
       } else {
-        setMessage("Something went wrong. Try again.");
+        toast.error("Something went wrong. Try again.");
       }
     }
     setIsPending(false);
@@ -50,6 +47,7 @@ const PasswordOtp = () => {
       className="h-screen flex items-center justify-center p-4 sm:p-6 md:p-8"
       data-theme="forest"
     >
+      <Toaster/>
       <div className="border border-primary/25 flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-base-100 rounded-xl shadow-lg overflow-hidden">
         {/* FORM SECTION */}
         <div className="w-full lg:w-1/2 p-4 sm:p-8 flex flex-col">
@@ -99,19 +97,6 @@ const PasswordOtp = () => {
                       "Verify"
                     )}
                   </button>
-
-                  {message && (
-                    <p
-                      className={`mt-3 text-center ${
-                        message.toLowerCase().includes("success")
-                          ? "text-green-600"
-                          : "text-red-600"
-                      }`}
-                    >
-                      {message}
-                    </p>
-                  )}
-
                   <div className="text-center mt-4">
                     <p className="text-sm">
                       Don't have an account?{" "}

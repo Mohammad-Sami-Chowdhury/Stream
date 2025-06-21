@@ -2,12 +2,12 @@ import { useState } from "react";
 import { ShipWheelIcon } from "lucide-react";
 import { axiosInstance } from "../lib/axios";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 const ResetPassword = () => {
   const email = localStorage.getItem("email") || "";
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [message, setMessage] = useState("");
   const [isPending, setIsPending] = useState(false);
   const navigate = useNavigate();
 
@@ -15,12 +15,11 @@ const ResetPassword = () => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      setMessage("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
     setIsPending(true);
-    setMessage("");
 
     try {
       const response = await axiosInstance.post("/auth/reset-password", {
@@ -29,12 +28,12 @@ const ResetPassword = () => {
       });
 
       if (response.status === 200) {
-        setMessage("Password reset successfully! Redirecting to login...");
+        toast.success("Password reset successfully! Redirecting to login...");
         setTimeout(() => {
           navigate("/login");
         }, 2000);
       } else {
-        setMessage(response.data.message || "Failed to reset password.");
+        toast.error(response.data.message || "Failed to reset password.");
       }
     } catch (error) {
       if (
@@ -42,9 +41,9 @@ const ResetPassword = () => {
         error.response.data &&
         error.response.data.message
       ) {
-        setMessage(error.response.data.message);
+        toast.error(error.response.data.message);
       } else {
-        setMessage("Something went wrong. Please try again.");
+        toast.error("Something went wrong. Please try again.");
       }
     }
     setIsPending(false);
@@ -55,6 +54,7 @@ const ResetPassword = () => {
       className="h-screen flex items-center justify-center p-4 sm:p-6 md:p-8"
       data-theme="forest"
     >
+      <Toaster />
       <div className="border border-primary/25 flex flex-col w-full max-w-md mx-auto bg-base-100 rounded-xl shadow-lg p-8">
         <div className="mb-6 flex items-center justify-center gap-2">
           <ShipWheelIcon className="size-9 text-primary" />
@@ -103,18 +103,6 @@ const ResetPassword = () => {
           >
             {isPending ? "Resetting..." : "Reset Password"}
           </button>
-
-          {message && (
-            <p
-              className={`mt-3 text-center ${
-                message.toLowerCase().includes("success")
-                  ? "text-green-600"
-                  : "text-red-600"
-              }`}
-            >
-              {message}
-            </p>
-          )}
         </form>
       </div>
     </div>
