@@ -51,7 +51,8 @@ const userSchema = new mongoose.Schema(
     codeExpiresAt: {
       type: Date,
     },
-
+    resetCode: { type: String },
+    resetCodeExpiresAt: { type: Date },
     friends: [
       {
         type: mongoose.Schema.Types.ObjectId,

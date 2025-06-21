@@ -1,94 +1,86 @@
 import { useState } from "react";
 import { ShipWheelIcon } from "lucide-react";
-import { Link } from "react-router";
-import useLogin from "../hooks/useLogin";
+import { axiosInstance } from "../lib/axios";
+import { Link, useNavigate } from "react-router-dom";
 
-const LoginPage = () => {
-  const [loginData, setLoginData] = useState({
-    email: "",
-    password: "",
-  });
+const PasswordOtp = () => {
+  const email = localStorage.getItem("email") || ""; // fixed, no need for state here
+  const [code, setCode] = useState("");
+  const [isPending, setIsPending] = useState(false);
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
-  // This is how we did it at first, without using our custom hook
-  // const queryClient = useQueryClient();
-  // const {
-  //   mutate: loginMutation,
-  //   isPending,
-  //   error,
-  // } = useMutation({
-  //   mutationFn: login,
-  //   onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] }),
-  // });
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // prevent page reload
 
-  // This is how we did it using our custom hook - optimized version
-  const { isPending, error, loginMutation } = useLogin();
+    setIsPending(true);
+    setMessage("");
+    try {
+      const response = await axiosInstance.post("/auth/verify-reset-code", {
+        email,
+        code,
+      });
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    loginMutation(loginData);
+      if (response.status === 200) {
+        setMessage(response.data.message || "Verification successful!");
+
+        // Navigate to reset password page on success
+        setTimeout(() => {
+          navigate("/reset-password");
+        }, 1000);
+      } else {
+        setMessage(response.data.message || "Verification failed!");
+      }
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setMessage(error.response.data.message);
+      } else {
+        setMessage("Something went wrong. Try again.");
+      }
+    }
+    setIsPending(false);
   };
+
   return (
     <div
       className="h-screen flex items-center justify-center p-4 sm:p-6 md:p-8"
       data-theme="forest"
     >
       <div className="border border-primary/25 flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-base-100 rounded-xl shadow-lg overflow-hidden">
-        {/* LOGIN FORM SECTION */}
+        {/* FORM SECTION */}
         <div className="w-full lg:w-1/2 p-4 sm:p-8 flex flex-col">
           {/* LOGO */}
           <div className="mb-4 flex items-center justify-start gap-2">
             <ShipWheelIcon className="size-9 text-primary" />
-            <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary  tracking-wider">
+            <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider">
               Stream
             </span>
           </div>
-
-          {/* ERROR MESSAGE DISPLAY */}
-          {error && (
-            <div className="alert alert-error mb-4">
-              <span>{error.response.data.message}</span>
-            </div>
-          )}
-
           <div className="w-full">
-            <form onSubmit={handleLogin}>
+            <form onSubmit={handleSubmit}>
               <div className="space-y-4">
                 <div>
-                  <h2 className="text-xl font-semibold">Welcome Back</h2>
+                  <h2 className="text-xl font-semibold">Verify Your OTP</h2>
                   <p className="text-sm opacity-70">
-                    Sign in to your account to continue your language journey
+                    Verify the OTP sent to <b>{email}</b> to continue.
                   </p>
                 </div>
 
                 <div className="flex flex-col gap-3">
                   <div className="form-control w-full space-y-2">
                     <label className="label">
-                      <span className="label-text">Email</span>
+                      <span className="label-text">Verification Code</span>
                     </label>
                     <input
-                      type="email"
-                      placeholder="hello@example.com"
+                      type="text"
+                      placeholder="Enter your OTP code"
                       className="input input-bordered w-full"
-                      value={loginData.email}
-                      onChange={(e) =>
-                        setLoginData({ ...loginData, email: e.target.value })
-                      }
-                      required
-                    />
-                  </div>
-
-                  <div className="form-control w-full space-y-2">
-                    <label className="label">
-                      <span className="label-text">Password</span>
-                    </label>
-                    <input
-                      type="password"
-                      placeholder="••••••••"
-                      className="input input-bordered w-full"
-                      value={loginData.password}
-                      onChange={(e) =>
-                        setLoginData({ ...loginData, password: e.target.value })
-                      }
+                      value={code}
+                      onChange={(e) => setCode(e.target.value)}
                       required
                     />
                   </div>
@@ -101,25 +93,26 @@ const LoginPage = () => {
                     {isPending ? (
                       <>
                         <span className="loading loading-spinner loading-xs"></span>
-                        Signing in...
+                        Verifying...
                       </>
                     ) : (
-                      "Sign In"
+                      "Verify"
                     )}
                   </button>
 
-                  <div className="text-center mt-4">
-                    <p className="text-sm">
-                      Forgot Password?{" "}
-                      <Link
-                        to="/reset-password-otp"
-                        className="text-primary hover:underline"
-                      >
-                        Reset
-                      </Link>
+                  {message && (
+                    <p
+                      className={`mt-3 text-center ${
+                        message.toLowerCase().includes("success")
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {message}
                     </p>
-                  </div>
-                  <div className="text-center mt-1">
+                  )}
+
+                  <div className="text-center mt-4">
                     <p className="text-sm">
                       Don't have an account?{" "}
                       <Link
@@ -163,4 +156,5 @@ const LoginPage = () => {
     </div>
   );
 };
-export default LoginPage;
+
+export default PasswordOtp;

@@ -15,6 +15,9 @@ import useAuthUser from "./hooks/useAuthUser.js";
 import Layout from "./components/Layout.jsx";
 import { useThemeStore } from "./store/useThemeStore.js";
 import Friends from "./pages/Friends.jsx";
+import PasswordReset from "./pages/PasswordReset.jsx";
+import PasswordOtp from "./pages/PasswordOtp.jsx";
+import PasswordResetPage from "./pages/PasswordResetPage.jsx";
 
 const App = () => {
   const { isLoading, authUser } = useAuthUser();
@@ -75,6 +78,22 @@ const App = () => {
             ) : (
               <Navigate to="/onboarding" />
             )
+          }
+        />
+        <Route
+          path="/reset-password-email"
+          element={!isAuthenticated ? <PasswordReset /> : <Navigate to="/" />}
+        />
+
+        <Route
+          path="/reset-password-otp"
+          element={!isAuthenticated ? <PasswordOtp /> : <Navigate to="/" />}
+        />
+
+        <Route
+          path="/reset-password"
+          element={
+            !isAuthenticated ? <PasswordResetPage /> : <Navigate to="/" />
           }
         />
 
