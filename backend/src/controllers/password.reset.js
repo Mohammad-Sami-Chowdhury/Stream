@@ -137,14 +137,8 @@ export async function resetPassword(req, res) {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+    user.password = password;
 
-    // Hash the new password
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    user.password = hashedPassword;
-
-    // Clear any resetCode fields if you want
     user.resetCode = null;
     user.resetCodeExpiresAt = null;
 
