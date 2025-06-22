@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ShipWheelIcon } from "lucide-react";
+import { Eye, EyeClosed, ShipWheelIcon } from "lucide-react";
 import { axiosInstance } from "../lib/axios";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
@@ -10,6 +10,11 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isPending, setIsPending] = useState(false);
   const navigate = useNavigate();
+
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -73,7 +78,7 @@ const ResetPassword = () => {
               <span className="label-text">New Password</span>
             </label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Enter new password"
               className="input input-bordered w-full"
               value={password}
@@ -86,14 +91,23 @@ const ResetPassword = () => {
             <label className="label">
               <span className="label-text">Confirm Password</span>
             </label>
-            <input
-              type="password"
-              placeholder="Confirm new password"
-              className="input input-bordered w-full"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Confirm new password"
+                className="input input-bordered w-full"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+              <button onClick={togglePasswordVisibility}>
+                {showPassword ? (
+                  <Eye className="absolute right-5 bottom-[11px]" />
+                ) : (
+                  <EyeClosed className="absolute right-5 bottom-[11px]" />
+                )}
+              </button>
+            </div>
           </div>
 
           <button

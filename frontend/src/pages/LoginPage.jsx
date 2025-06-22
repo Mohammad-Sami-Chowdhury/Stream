@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ShipWheelIcon } from "lucide-react";
+import { ShipWheelIcon, Eye, EyeClosed } from "lucide-react";
 import { Link } from "react-router";
 import useLogin from "../hooks/useLogin";
 import toast, { Toaster } from "react-hot-toast";
@@ -9,6 +9,11 @@ const LoginPage = () => {
     email: "",
     password: "",
   });
+
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   // This is how we did it using our custom hook - optimized version
   const { isPending, error, loginMutation } = useLogin();
@@ -66,20 +71,32 @@ const LoginPage = () => {
                     />
                   </div>
 
-                  <div className="form-control w-full space-y-2">
+                  <div className="form-control w-full space-y-2 relative">
                     <label className="label">
                       <span className="label-text">Password</span>
                     </label>
-                    <input
-                      type="password"
-                      placeholder="••••••••"
-                      className="input input-bordered w-full"
-                      value={loginData.password}
-                      onChange={(e) =>
-                        setLoginData({ ...loginData, password: e.target.value })
-                      }
-                      required
-                    />
+                    <div>
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="••••••••"
+                        className="input input-bordered w-full"
+                        value={loginData.password}
+                        onChange={(e) =>
+                          setLoginData({
+                            ...loginData,
+                            password: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                      <button onClick={togglePasswordVisibility}>
+                        {showPassword ? (
+                          <Eye className="absolute right-5 bottom-[11px]" />
+                        ) : (
+                          <EyeClosed className="absolute right-5 bottom-[11px]" />
+                        )}
+                      </button>
+                    </div>
                   </div>
 
                   <button
