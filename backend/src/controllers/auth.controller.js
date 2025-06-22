@@ -68,7 +68,7 @@ export async function signup(req, res) {
               <tr style="background: #add6ff">
                 <td align="center" style="padding: 20px">
                   <img
-                    src="https://i.ibb.co/kVHb1YRw/logo.png"
+                    src="https://res.cloudinary.com/dspjhuxeu/image/upload/v1750572736/logo_j8rcyh.png"
                     alt="Stream"
                     width="120"
                     style="display: block"
