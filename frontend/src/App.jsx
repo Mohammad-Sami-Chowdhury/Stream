@@ -18,6 +18,7 @@ import Friends from "./pages/Friends.jsx";
 import PasswordReset from "./pages/PasswordReset.jsx";
 import PasswordOtp from "./pages/PasswordOtp.jsx";
 import PasswordResetPage from "./pages/PasswordResetPage.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx";
 
 const App = () => {
   const { isLoading, authUser } = useAuthUser();
@@ -83,6 +84,22 @@ const App = () => {
         <Route
           path="/reset-password-email"
           element={!isAuthenticated ? <PasswordReset /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/profile"
+          element={
+            isAuthenticated && isVerified && isOnboarded ? (
+              <Layout showSidebar={true}>
+                <ProfilePage />
+              </Layout>
+            ) : !isAuthenticated ? (
+              <Navigate to="/login" />
+            ) : !isVerified ? (
+              <Navigate to="/verify-otp" />
+            ) : (
+              <Navigate to="/onboarding" />
+            )
+          }
         />
 
         <Route
