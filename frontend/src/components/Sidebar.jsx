@@ -6,6 +6,7 @@ import {
   ShipWheelIcon,
   UsersIcon,
   UserPen,
+  MessageSquare,
 } from "lucide-react";
 
 const Sidebar = () => {
@@ -43,6 +44,15 @@ const Sidebar = () => {
         >
           <UsersIcon className="size-5 text-base-content opacity-70" />
           <span>Friends</span>
+        </Link>
+        <Link
+          to="/chat"
+          className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${
+            currentPath === "/chat" ? "btn-active" : ""
+          }`}
+        >
+          <MessageSquare className="size-5 text-base-content opacity-70" />
+          <span>Chats</span>
         </Link>
 
         <Link

@@ -3,7 +3,6 @@ import { useParams } from "react-router";
 import useAuthUser from "../hooks/useAuthUser";
 import { useQuery } from "@tanstack/react-query";
 import { getStreamToken } from "../lib/api";
-
 import {
   Channel,
   ChannelHeader,
@@ -18,6 +17,8 @@ import toast from "react-hot-toast";
 
 import ChatLoader from "../components/ChatLoader";
 import CallButton from "../components/CallButton";
+import Sidebar from "../components/Sidebar";
+import Chaters from "../components/Chat";
 
 const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY;
 
@@ -95,20 +96,28 @@ const ChatPage = () => {
   if (loading || !chatClient || !channel) return <ChatLoader />;
 
   return (
-    <div className="h-[93vh]">
-      <Chat client={chatClient}>
-        <Channel channel={channel}>
-          <div className="w-full relative">
-            <CallButton handleVideoCall={handleVideoCall} />
-            <Window>
-              <ChannelHeader />
-              <MessageList />
-              <MessageInput focus />
-            </Window>
-          </div>
-          <Thread />
-        </Channel>
-      </Chat>
+    <div className="h-[93vh] flex overflow-hidden">
+      <div className="w-[250px]">
+        <Sidebar />
+      </div>
+      <div className="w-[250px]">
+        <Chaters />
+      </div>
+      <div className="flex-1 overflow-hidden">
+        <Chat client={chatClient}>
+          <Channel channel={channel}>
+            <div className="w-full relative">
+              <CallButton handleVideoCall={handleVideoCall} />
+              <Window>
+                <ChannelHeader />
+                <MessageList />
+                <MessageInput focus />
+              </Window>
+            </div>
+            <Thread />
+          </Channel>
+        </Chat>
+      </div>
     </div>
   );
 };

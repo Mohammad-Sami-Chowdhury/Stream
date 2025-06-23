@@ -12,7 +12,8 @@ const SignUpPage = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const togglePasswordVisibility = () => {
+  const togglePasswordVisibility = (e) => {
+    e.preventDefault();
     setShowPassword(!showPassword);
   };
 
