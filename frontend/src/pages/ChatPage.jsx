@@ -17,9 +17,7 @@ import toast from "react-hot-toast";
 
 import ChatLoader from "../components/ChatLoader";
 import CallButton from "../components/CallButton";
-import Sidebar from "../components/Sidebar";
 import Chaters from "../components/Chat";
-
 const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY;
 
 const ChatPage = () => {
@@ -96,14 +94,11 @@ const ChatPage = () => {
   if (loading || !chatClient || !channel) return <ChatLoader />;
 
   return (
-    <div className="h-[93vh] flex overflow-hidden">
-      <div className="w-[250px]">
-        <Sidebar />
-      </div>
-      <div className="w-[250px]">
+    <div className="h-[92vh] flex">
+      <div className="w-[350px]">
         <Chaters />
       </div>
-      <div className="flex-1 overflow-hidden">
+      <div className="w-full">
         <Chat client={chatClient}>
           <Channel channel={channel}>
             <div className="w-full relative">

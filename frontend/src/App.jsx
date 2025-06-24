@@ -19,6 +19,7 @@ import PasswordReset from "./pages/PasswordReset.jsx";
 import PasswordOtp from "./pages/PasswordOtp.jsx";
 import PasswordResetPage from "./pages/PasswordResetPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
+import ChattingPage from "./pages/ChattingPage.jsx";
 
 const App = () => {
   const { isLoading, authUser } = useAuthUser();
@@ -192,10 +193,27 @@ const App = () => {
         />
 
         <Route
+          path="/chat"
+          element={
+            isAuthenticated && isVerified && isOnboarded ? (
+              <Layout showSidebar={true}>
+                <ChattingPage/>
+              </Layout>
+            ) : !isAuthenticated ? (
+              <Navigate to="/login" />
+            ) : !isVerified ? (
+              <Navigate to="/verify-otp" />
+            ) : (
+              <Navigate to="/onboarding" />
+            )
+          }
+        />
+
+        <Route
           path="/chat/:id"
           element={
             isAuthenticated && isVerified && isOnboarded ? (
-              <Layout showSidebar={false}>
+              <Layout showSidebar={true}>
                 <ChatPage />
               </Layout>
             ) : !isAuthenticated ? (
