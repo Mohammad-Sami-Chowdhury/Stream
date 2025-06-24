@@ -7,7 +7,7 @@ export const signup = async (signupData) => {
 
 export const login = async (loginData) => {
   console.log(loginData);
-  
+
   const response = await axiosInstance.post("/auth/login", loginData);
   return response.data;
 };
@@ -51,13 +51,22 @@ export async function sendFriendRequest(userId) {
   return response.data;
 }
 
+export async function cancelFriendRequest(userId) {
+  const response = await axiosInstance.put(
+    `users/friend-request/${userId}/cancel` // ✅ fixed route
+  );
+  return response.data;
+}
+
 export async function getFriendRequests() {
   const response = await axiosInstance.get("/users/friend-requests");
   return response.data;
 }
 
 export async function acceptFriendRequest(requestId) {
-  const response = await axiosInstance.put(`/users/friend-request/${requestId}/accept`);
+  const response = await axiosInstance.put(
+    `/users/friend-request/${requestId}/accept`
+  );
   return response.data;
 }
 

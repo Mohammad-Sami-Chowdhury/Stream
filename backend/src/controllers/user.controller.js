@@ -24,7 +24,10 @@ export async function getMyFriends(req, res) {
   try {
     const user = await User.findById(req.user.id)
       .select("friends")
-      .populate("friends", "fullName profilePic nativeLanguage learningLanguage");
+      .populate(
+        "friends",
+        "fullName profilePic nativeLanguage learningLanguage"
+      );
 
     res.status(200).json(user.friends);
   } catch (error) {
@@ -40,7 +43,9 @@ export async function sendFriendRequest(req, res) {
 
     // prevent sending req to yourself
     if (myId === recipientId) {
-      return res.status(400).json({ message: "You can't send friend request to yourself" });
+      return res
+        .status(400)
+        .json({ message: "You can't send friend request to yourself" });
     }
 
     const recipient = await User.findById(recipientId);
@@ -50,7 +55,9 @@ export async function sendFriendRequest(req, res) {
 
     // check if user is already friends
     if (recipient.friends.includes(myId)) {
-      return res.status(400).json({ message: "You are already friends with this user" });
+      return res
+        .status(400)
+        .json({ message: "You are already friends with this user" });
     }
 
     // check if a req already exists
@@ -62,9 +69,9 @@ export async function sendFriendRequest(req, res) {
     });
 
     if (existingRequest) {
-      return res
-        .status(400)
-        .json({ message: "A friend request already exists between you and this user" });
+      return res.status(400).json({
+        message: "A friend request already exists between you and this user",
+      });
     }
 
     const friendRequest = await FriendRequest.create({
@@ -91,7 +98,9 @@ export async function acceptFriendRequest(req, res) {
 
     // Verify the current user is the recipient
     if (friendRequest.recipient.toString() !== req.user.id) {
-      return res.status(403).json({ message: "You are not authorized to accept this request" });
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to accept this request" });
     }
 
     friendRequest.status = "accepted";
@@ -114,12 +123,42 @@ export async function acceptFriendRequest(req, res) {
   }
 }
 
+export const cancelFriendRequest = async (req, res) => {
+  const senderId = req.user._id;
+  const recipientId = req.params.id;
+
+  try {
+    const friendRequest = await FriendRequest.findOne({
+      sender: senderId,
+      recipient: recipientId,
+      status: "pending",
+    });
+
+    if (!friendRequest) {
+      return res
+        .status(404)
+        .json({ message: "Friend request not found or already processed" });
+    }
+
+    friendRequest.status = "cancelled"; // update status
+    await friendRequest.save();
+
+    return res.status(200).json({ message: "Friend request cancelled" });
+  } catch (error) {
+    console.error("Error cancelling friend request:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 export async function getFriendRequests(req, res) {
   try {
     const incomingReqs = await FriendRequest.find({
       recipient: req.user.id,
       status: "pending",
-    }).populate("sender", "fullName profilePic nativeLanguage learningLanguage");
+    }).populate(
+      "sender",
+      "fullName profilePic nativeLanguage learningLanguage"
+    );
 
     const acceptedReqs = await FriendRequest.find({
       sender: req.user.id,
@@ -138,7 +177,10 @@ export async function getOutgoingFriendReqs(req, res) {
     const outgoingRequests = await FriendRequest.find({
       sender: req.user.id,
       status: "pending",
-    }).populate("recipient", "fullName profilePic nativeLanguage learningLanguage");
+    }).populate(
+      "recipient",
+      "fullName profilePic nativeLanguage learningLanguage"
+    );
 
     res.status(200).json(outgoingRequests);
   } catch (error) {
