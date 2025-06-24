@@ -1,16 +1,35 @@
-import { useQuery } from "@tanstack/react-query";
-import { getUserFriends } from "../lib/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  acceptFriendRequest,
+  getFriendRequests,
+  getUserFriends,
+} from "../lib/api";
 import { Link } from "react-router";
 import { UsersIcon } from "lucide-react";
 import FriendCard from "../components/FriendCard";
 import NoFriendsFound from "../components/NoFriendsFound";
 
 const Friends = () => {
+  const queryClient = useQueryClient();
   const { data: friends = [], isLoading: loadingFriends } = useQuery({
     queryKey: ["friends"],
     queryFn: getUserFriends,
   });
 
+  const { data: friendRequests } = useQuery({
+    queryKey: ["friendRequests"],
+    queryFn: getFriendRequests,
+  });
+
+  const { mutate: acceptRequestMutation, isPending } = useMutation({
+    mutationFn: acceptFriendRequest,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["friendRequests"] });
+      queryClient.invalidateQueries({ queryKey: ["friends"] });
+    },
+  });
+
+  const incomingRequests = friendRequests?.incomingReqs || [];
   return (
     <div className="p-4 sm:p-6 lg:p-8">
       <div className="container mx-auto space-y-10">
@@ -33,10 +52,28 @@ const Friends = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {friends.map((friend) => (
-              <FriendCard key={friend._id} friend={friend} />
+              <FriendCard key={friend._id} friend={friend} showMessageButton={true} />
             ))}
           </div>
         )}
+        <div className="space-y-3">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight mb-10">
+            Friend Requests
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {incomingRequests.map((request) => (
+              <FriendCard key={request._id} friend={request.sender}>
+                <button
+                  className="btn btn-outline w-full"
+                  onClick={() => acceptRequestMutation(request._id)}
+                  disabled={isPending}
+                >
+                  Accept
+                </button>
+              </FriendCard>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { LANGUAGE_TO_FLAG } from "../constants";
 
-const FriendCard = ({ friend }) => {
+const FriendCard = ({ friend, showMessageButton = true, children }) => {
   return (
     <div className="card bg-base-200 hover:shadow-md transition-shadow">
       <div className="card-body p-4">
@@ -24,13 +24,19 @@ const FriendCard = ({ friend }) => {
           </span>
         </div>
 
-        <Link to={`/chat/${friend._id}`} className="btn btn-outline w-full">
-          Message
-        </Link>
+        {/* Action section */}
+        {children ? (
+          children // show Accept button if passed from parent
+        ) : showMessageButton ? (
+          <Link to={`/chat/${friend._id}`} className="btn btn-outline w-full">
+            Message
+          </Link>
+        ) : null}
       </div>
     </div>
   );
 };
+
 export default FriendCard;
 
 export function getLanguageFlag(language) {
