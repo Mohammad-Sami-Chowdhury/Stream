@@ -25,7 +25,7 @@ const App = () => {
   const { isLoading, authUser } = useAuthUser();
   const { theme } = useThemeStore();
 
-  const isAuthenticated = Boolean(authUser);
+  const isAuthenticated = Boolean(authUser && authUser.verified);
   const isVerified = authUser?.verified;
   const isOnboarded = authUser?.isOnboarded;
 
@@ -197,7 +197,7 @@ const App = () => {
           element={
             isAuthenticated && isVerified && isOnboarded ? (
               <Layout showSidebar={true}>
-                <ChattingPage/>
+                <ChattingPage />
               </Layout>
             ) : !isAuthenticated ? (
               <Navigate to="/login" />
